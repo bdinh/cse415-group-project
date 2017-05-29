@@ -5,12 +5,12 @@ class Cube:
 
     facedict = {"U":0, "D":1, "F":2, "B":3, "R":4, "L":5}
     dictface = dict([(v, k) for k, v in facedict.items()])
-    normals = [np.array([0., 1., 0.]), np.array([0., -1., 0.]),
-               np.array([0., 0., 1.]), np.array([0., 0., -1.]),
-               np.array([1., 0., 0.]), np.array([-1., 0., 0.])]
-    xdirs = [np.array([1., 0., 0.]), np.array([1., 0., 0.]),
-               np.array([1., 0., 0.]), np.array([-1., 0., 0.]),
-               np.array([0., 0., -1.]), np.array([0, 0., 1.])]
+    # normals = [np.array([0., 1., 0.]), np.array([0., -1., 0.]),
+    #            np.array([0., 0., 1.]), np.array([0., 0., -1.]),
+    #            np.array([1., 0., 0.]), np.array([-1., 0., 0.])]
+    # xdirs = [np.array([1., 0., 0.]), np.array([1., 0., 0.]),
+    #            np.array([1., 0., 0.]), np.array([-1., 0., 0.]),
+    #            np.array([0., 0., -1.]), np.array([0, 0., 1.])]
     colordict = {"w":0, "y":1, "b":2, "g":3, "o":4, "r":5}
 
 
@@ -21,7 +21,7 @@ class Cube:
         self.N = 2
         self.flatBoard = np.array([np.tile(i, (self.N, self.N)) for i in range(6)])
         self.npWinningState = self.flatBoard
-        self.randomize(10)
+        # self.randomize(10)
 
 
 
@@ -94,7 +94,7 @@ class Cube:
                 self.flatBoard[i] = np.rot90(self.flatBoard[i], 3)
             if l == self.N - 1:
                 self.flatBoard[i2] = np.rot90(self.flatBoard[i2], 1)
-        print("moved", f, l, len(ds))
+        # print("moved", f, l, len(ds))
         return None
 
     def _rotate(self, args):
@@ -112,18 +112,19 @@ class Cube:
 
 
     def getCubeState(self):
-        self.result = []
+        self.cubeStateArray = []
         for i in range(len(self.flatBoard)):
             add = []
             add.append(self.flatBoard[i].tolist())
-            self.result.append(add)
+            self.cubeStateArray.append(add)
+        return self.cubeStateArray
 
-    #
-    # def __str__(self):
-    #     result = []
-    #     for i in range(len(self.flatBoard)):
-    #         result.append(self.flatBoard[i])
-    #     return result
+
+    def __str__(self):
+        result = []
+        for i in range(len(self.flatBoard)):
+            result.append(self.flatBoard[i].tolist())
+        return str(result)
 
 
 class Operator:
@@ -146,7 +147,7 @@ def can_move(s):
 
 def move(s, f, l, d):
     s.moveCube(f, l, d)
-    return s.flatBoard
+    return s
 
 
 # Twelve operators for each face. clock wise (cw) and counter clock wise (ccw) turns
@@ -202,7 +203,11 @@ RightCCWOP = Operator("Right Face Counter Clockwise Turn",
 
 OPERATORS = [UpCWOP, UpCCWOP, DownCWOP, DownCCWOP,
              FrontCWOP, FrontCCWOP, BackCWOP, BackCCWOP,
-             LeftCWOP, LeftCCWOP, RightCWOP, RightCCWOP,]
+             LeftCWOP, LeftCCWOP, RightCWOP, RightCCWOP]
+
+# ex U: U face clockwise turn
+#    U': U face counter clockwise turn
+ACTIONS = ["U", "U'", "D", "D'", "F", "F'", "B", "B'", "L", "L'", "R", "R'"]
 
 # Winning state in a normal array format
 WINNING_STATE = [[[[0, 0], [0, 0]]], [[[1, 1], [1, 1]]], [[[2, 2], [2, 2]]], [[[3, 3], [3, 3]]], [[[4, 4], [4, 4]]],
@@ -248,11 +253,12 @@ def R(s, a, sp):
 
 if __name__ == "__main__":
     c = Cube()
+
     print(c.flatBoard)
-    print(c.result)
+    # print(c.result)
 
     c.moveCube("U", 0, -1)
-    # print(c.flatBoard)
+    print(c.flatBoard)
 
 
 
