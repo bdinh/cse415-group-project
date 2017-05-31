@@ -262,3 +262,76 @@ if __name__ == "__main__":
 
 
 
+    def generateAllStates(self):
+        '''
+        Generates all possible states from initial to winning/completed state.
+        '''
+        OPEN = []
+        CLOSED = []
+        OPEN.append(self.nptoArray(self.start_state))
+        # self.known_states = set()
+        count = 0
+        while not (self.winning_state in OPEN):
+            S = np.asarray(OPEN[0])
+            del OPEN[0]
+            CLOSED.append(self.nptoArray(S))
+            self.known_states.add(str(self.nptoArray(S)))
+            L = []
+            neighbors = self.state_neighbors(S)
+            arrayVersion = []
+            for successors in neighbors:
+                successorsString = self.nptoArray(successors)
+                arraySuccessor = str(self.nptoArray(successors))
+                if not successorsString in OPEN:
+                    arrayVersion.append(arraySuccessor)
+                    L.append(self.nptoArray(successors))
+            OPEN = OPEN + L
+            self.known_states.update(arrayVersion)
+            count += 1
+
+
+
+def AStar(initial_state):
+    ''' A* search algorithm implemented using a priority queue to store states and total cost.
+    Used a counter produced by the itertools.count() function to break ties among states with
+    same priority.
+    '''
+    global COUNT, BACKLINKS
+    # TODO: initialze and put first state into
+    # priority queue with respective priority
+    # add any auxiliary data structures as needed
+    OPEN = PriorityQueue()
+    counter = count()
+    OPEN.put((0 + heuristics(initial_state), counter,  initial_state))
+    CLOSED = []
+    BACKLINKS[initial_state] = - 1
+    gCost = {initial_state.__hash__(): 0}
+    while not OPEN.empty():
+        S = OPEN.get()
+        S = S[2]
+        while S in CLOSED:
+            S = OPEN.get()
+            S = S[2]
+        CLOSED.append(S)
+        # DO NOT CHANGE THIS SECTION: begining
+        if Problem.GOAL_TEST(S):
+            print(Problem.GOAL_MESSAGE_FUNCTION(S))
+            path = backtrace(S)
+            return path, Problem.PROBLEM_NAME
+            # DO NOT CHANGE THIS SECTION: end
+            # TODO: finish A* implementation
+        COUNT += 1
+        # if (COUNT % 32) == 0:
+        #     print(".", end="")
+        #     if (COUNT % 128) == 0:
+        #         print("COUNT = " + str(COUNT))
+        #         print("len(OPEN)=" + str(len(OPEN)))
+        #         print("len(CLOSED)=" + str(len(CLOSED)))
+        newGCost = gCost[S.__hash__()] + 1
+        for op in Problem.OPERATORS:
+            if op.precond(S):
+                new_state = op.state_transf(S)
+                if not new_state in CLOSED: # Do we need to check open?
+                    BACKLINKS[new_state] = S
+                    OPEN.put((newGCost + heuristics(S), next(counter), new_state) )
+                    gCost[new_state.__hash__()] = newGCost

@@ -1,3 +1,9 @@
+'''
+Bao Dinh, Andrew Kan, Chris Oh
+CSE 415
+Project
+'''
+
 import numpy as np
 import math
 
@@ -12,8 +18,12 @@ def createInitialCube():
     Create a random initial cube(2x2) through an array that represents the cube layed out flatly
     '''
     global initial_board
-    initial_board = move(initial_board, "U", 0, 1)
-    # print(str(nptoArray(initial_board)))
+    # initial_board = [[[1, 1], [0, 0]], [[0, 0], [1, 1]], [[3, 3], [2, 2]], [[2, 2], [3, 3]], [[4, 4], [4, 4]], [[5, 5], [5, 5]]]
+    initial_board = randomize(initial_board, 9)
+    # initial_board = moveCube(initial_board, "U", 0, 1)
+    # solved states
+    # [[[1, 1], [0, 0]], [[0, 0], [1, 1]], [[3, 3], [2, 2]], [[2, 2], [3, 3]], [[4, 4], [4, 4]], [[5, 5], [5, 5]]]
+
 
 
 
@@ -24,8 +34,6 @@ def randomize(board, n):
     global N, dictface
     for t in range(n):
         f = dictface[np.random.randint(6)]
-        # l = np.random.randint(N)
-        # d = 1 + np.random.randint(3)
         d = np.random.randint(2)
         if d == 0:
             d = -1
@@ -41,9 +49,9 @@ def moveCube(board, f, l, d):
     moves, and `d=2` for a 180-degree move..
     """
     global facedict, N
-    print(l)
     i = facedict[f]
-    l2 = N - 1 - l
+    # l2 = N - 1 - l
+    l2 = 0
     assert l < N
     ds = range((d + 4) % 4)
     if f == "U":
@@ -81,7 +89,7 @@ def moveCube(board, f, l, d):
             board[i] = np.rot90(board[i], 3)
         if l == N - 1:
             board[i2] = np.rot90(board[i2], 1)
-    print("moved", f, l, len(ds))
+    # print("moved", f, l, len(ds))
     return board
 
 def rotate(board, args):
@@ -102,11 +110,6 @@ def nptoArray(board):
     '''
     Convert np array into list
     '''
-    # cubeStateArray = []
-    # for i in range(len(board)):
-    #     add = []
-    #     add.append(board[i].tolist())
-    #     cubeStateArray.append(add)
     return np.array(board).tolist()
 
 
@@ -129,7 +132,7 @@ def can_move(s):
     return True
 
 def move(s, f, l, d):
-    new = s.__copy__()
+    new = s.copy()
     new = moveCube(new, f, l, d)
     return new
 
@@ -198,8 +201,6 @@ ACTIONS = ["U", "U'", "D", "D'", "F", "F'", "B", "B'", "L", "L'", "R", "R'"]
 WINNING_STATE = [[[0, 0], [0, 0]], [[1, 1], [1, 1]], [[2, 2], [2, 2]], [[3, 3], [3, 3]], [[4, 4], [4, 4]], [[5, 5], [5, 5]]]
 
 
-
-
 # Gives each move equal probability
 P_normal = .083
 
@@ -208,13 +209,14 @@ def T(s, a, sp):
     Calculate the transition probability for going from state s to state sp after taking
     action a.
     '''
-    if s == WINNING_STATE: return 0
-    if sp == WINNING_STATE: return 1
+    if nptoArray(s) == WINNING_STATE: return 0
+    if nptoArray(sp) == WINNING_STATE: return 1
     return P_normal
 
 
 def R(s, a, sp):
     'Returns the reward associated with transitioning from s to sp via action a.'
+    sp = nptoArray(sp)
     if sp == WINNING_STATE: return 1000
     facedict = {"U":0, "D":1, "F":2, "B":3, "R":4, "L":5}
     facepointdict = {"U":0, "D":0, "F":2, "B":0, "R":0, "L":0}
@@ -222,18 +224,15 @@ def R(s, a, sp):
         count = 0
         point = 0
         for layer in range(len(sp[value])):
-            for cube in range(sp[value][layer]):
+            for cube in range(len(sp[value][layer])):
                 if sp[value][layer][cube] == value:
                     count += 1
         point = math.pow(2, count)
-        facepointdict.get(key, point)
-
+        facepointdict[key] = point
     totalRewards = 0
-    for key in facepointdict.items():
-        totalRewards += facepointdict.get(key)
+    for key, value in facepointdict.items():
+        totalRewards += value
     return totalRewards
 
-
-# if __name__ == "__main__":
 
 
