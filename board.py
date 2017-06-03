@@ -19,7 +19,7 @@ def createInitialCube():
     '''
     global initial_board
     # initial_board = [[[1, 1], [0, 0]], [[0, 0], [1, 1]], [[3, 3], [2, 2]], [[2, 2], [3, 3]], [[4, 4], [4, 4]], [[5, 5], [5, 5]]]
-    initial_board = randomize(initial_board, 9)
+    initial_board = randomize(initial_board, 2)
     # initial_board = moveCube(initial_board, "U", 0, 1)
     # solved states
     # [[[1, 1], [0, 0]], [[0, 0], [1, 1]], [[3, 3], [2, 2]], [[2, 2], [3, 3]], [[4, 4], [4, 4]], [[5, 5], [5, 5]]]

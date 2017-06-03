@@ -37,36 +37,36 @@ def test():
     # print(len(cube_MDP.known_states))
     # print(len(cube_MDP.succArray))
 
-    s = str(cube_MDP.winning_state)
-    path = []
-    actions = []
-    while s != -1:
-        path.append(s)
-        stateAction = cube_MDP.backlink[s]
-        s = stateAction[1]
-        a = stateAction[0]
-        actions.append(a)
-
-    path.reverse()
-    actions.reverse()
-    # print(path)
-    # print(actions)
-
-    initial_state_array = np.array(initial_state).tolist()
-
-    print("Initial State")
-    for i in range(len(initial_state_array)):
-        print(facedict[i] + " " + str(initial_state_array[i]))
-    print("\n")
-
-
-    print(printCube(path, actions))
-
-
+    # s = str(cube_MDP.winning_state)
+    # path = []
+    # actions = []
+    # while s != -1:
+    #     path.append(s)
+    #     stateAction = cube_MDP.backlink[s]
+    #     s = stateAction[1]
+    #     a = stateAction[0]
+    #     actions.append(a)
+    #
+    # path.reverse()
+    # actions.reverse()
+    # # print(path)
+    # # print(actions)
+    #
+    # initial_state_array = np.array(initial_state).tolist()
+    #
+    # print("Initial State")
+    # for i in range(len(initial_state_array)):
+    #     print(facedict[i] + " " + str(initial_state_array[i]))
+    # print("\n")
+    #
+    #
+    # print(printCube(path, actions))
 
 
 
-    # cube_MDP.valueIteration(.9, 10)
+
+
+    cube_MDP.valueIteration(.9, 10)
 
     # cube_MDP.QLearning(0.9, 2, 0.5)
 
