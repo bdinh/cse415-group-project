@@ -1,6 +1,5 @@
 '''
-Bao Dinh, Andrew Kan, Chris Oh
-CSE 415
+Bao Dinh
 Project
 '''
 
